@@ -63,11 +63,21 @@ $work = Join-Path $env:TEMP 'dsh-rescue-pod-tests'
 if (Test-Path -LiteralPath $work) { Remove-Item -LiteralPath $work -Recurse -Force }
 New-Item -ItemType Directory -Path $work -Force | Out-Null
 
+# MEASURED (2026-10-16): the guarantee scenario used to inherit pod-failtest's default
+# -WorkDir, which is a _podfail* directory INSIDE the checkout. That works on a normal
+# machine and fails on a restricted one: with the repository read-only (a sandbox, a
+# shared or mounted checkout) the very first New-Item is denied and the suite reports a
+# FAILED assertion -- which reads as "the builder is broken" when the truth is "this
+# checkout cannot be written to". Point the fixture at the suite's own temp root
+# instead. The leaf name is kept on purpose: pod-failtest's cleanup is fail-closed and
+# only deletes a fixture root whose leaf still matches _podfail*.
+$failtestWork = Join-Path $work '_podfail\ws'
+
 try {
   # ============================ 1. the guarantee ============================
   $script:caseCount += 1
   Write-Host '[1] the guarantee: a failed build must not touch the live package'
-  $r = Invoke-Ps1 $buildTest @()
+  $r = Invoke-Ps1 $buildTest @('-WorkDir', $failtestWork)
   Check 'pod-failtest passes end to end' ($r.code -eq 0) ('exit code = ' + $r.code)
   if ($r.code -ne 0) { Write-Host $r.text }
 
