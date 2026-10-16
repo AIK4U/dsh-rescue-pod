@@ -1,0 +1,34 @@
+EXAMPLE RESCUE PACKAGE
+======================
+
+This is a miniature stand-in for a real rescue package. It exists so the failure
+injection test in ..\_selftest\ has something honest to build, break and rebuild.
+
+WHAT IT IS FOR (in the parent project, not here)
+------------------------------------------------
+A rescue package is the copy of the tools you reach for when the thing you depend on
+no longer starts. That is a bad moment to discover that the package is incomplete.
+
+HOW TO USE THIS ONE
+-------------------
+  rescue.cmd              check only, changes nothing
+  rescue.cmd fix          repair what it can
+  rescue.cmd boot         start a clean-profile rescue session
+
+WHAT IS IN HERE
+---------------
+  rescue.ps1 / rescue.cmd        the entry point
+  watch.ps1 / watch.cmd          the watchdog
+  _backup\                       offline payload tarballs
+  _local-extensions\             locally patched files, as a snapshot
+  MANIFEST.json                  every file with its size and SHA256
+
+TWO THINGS THAT SURPRISE PEOPLE
+-------------------------------
+1. watch.log and MANIFEST.json are listed as "volatile" inside MANIFEST.json, so a
+   generic verifier can tell a deliberate exclusion from an unexpected file. Files
+   that append while the package is in use cannot be hashed.
+
+2. Do not add files to the package by hand. The package is rebuilt from sources, so a
+   hand-placed file silently disappears on the next build and is also unlisted in the
+   manifest -- which a verifier reports as EXTRA. Put it in _pod-src\_extra\ instead.

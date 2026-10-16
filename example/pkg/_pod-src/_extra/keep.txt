@@ -1,0 +1,17 @@
+This file lives in _pod-src\_extra\ on purpose, and it is the whole reason the
+directory exists.
+
+Anything under _extra\ rides along with the package: the builder copies it verbatim,
+keeps its relative path, and does so BEFORE the manifest is generated -- so it is
+hashed and listed like every other file.
+
+The alternative -- dropping a file straight into the built package -- has two failure
+modes, both measured:
+
+  * the next rebuild deletes the whole package first, so the file silently vanishes;
+  * the manifest is generated from what is on disk before anyone can add anything by
+    hand, so the file is also UNLISTED, and a verifier reports it as EXTRA.
+
+A satellite whose relative path collides with something the builder produces is a
+HARD ERROR, never an overwrite. A 33-byte satellite once replaced a 5347-byte README
+and nothing said a word.

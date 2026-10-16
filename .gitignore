@@ -1,0 +1,35 @@
+# Machine state, not source.
+
+# Built packages and the transient directories the two-phase builder creates.
+example/**/RESCUE-POD/
+example/**/*.staging/
+example/**/*.replaced/
+example/**/RESCUE-POD-v*.zip
+
+# The stamp is machine state: it records absolute paths and the hash of the
+# builder in ONE checkout. A stamp in the repository would be a lie by design.
+example/**/_podfail-last-ok.json
+example/**/buildtest-last-ok.json
+
+# The failure-injection test's throwaway fixture (it deletes itself; this is the net).
+example/**/_podfail*/
+
+# Runtime logs, manifests generated at build time, backups.
+*.log
+*.bak
+*.bak-*
+MANIFEST.json
+
+# The payload stub IS committed on purpose: it is a handful of bytes, and the
+# failure-injection test needs a payload whose version matches the declared one.
+# Real deployments keep their tarballs out of the repository.
+!example/pkg/_payload/example-dsh-memory-1.0.0.tgz
+
+# A package built from the example lands here when you follow the quick start.
+build/
+
+# Standard noise
+node_modules/
+.DS_Store
+Thumbs.db
+desktop.ini

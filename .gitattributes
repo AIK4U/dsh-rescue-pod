@@ -1,0 +1,12 @@
+# Keep text LF in the repository; Windows-native script types carry CRLF.
+#
+# The .ps1 / .cmd / .bat entries matter more than usual here: this project ships a
+# builder whose self-check counts non-ASCII bytes in exactly those file types, and a
+# checkout that silently rewrote their line endings would make its own tests lie
+# about the working tree.
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.tgz binary
+*.zip binary

@@ -1,0 +1,10 @@
+BYTE STUB -- NOT A REAL TARBALL.
+
+The failure-injection test in this repository needs a payload whose FILE NAME matches
+the declared version, because the builder refuses to ship an older payload silently.
+It never opens this file; a real deployment keeps its real tarballs out of the
+repository (see .gitignore) and this stub stands in for them.
+
+Name shape matters: a scoped package packs as "<scope>-<name>-<version>.tgz", so the
+builder matches "*dsh-memory-*.tgz" rather than "dsh-memory-*.tgz". A narrower filter
+silently misses every fresh download.
